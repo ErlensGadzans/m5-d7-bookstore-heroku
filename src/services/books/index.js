@@ -150,24 +150,19 @@ booksRouter.post("/:asin/comments", async (req, res, next) => {
   }
 });
 
-//get comments of books
-
 booksRouter.get("/:asin/comments", async (req, res, next) => {
   try {
-    const books = await getBooks();
-    const bookFound = books.find((book) => book.asin === req.params.asin);
+    const comments = await readJSON(commentsFilePath);
+    const filteredComments = comments.filter(
+      (comment) => comment.elementId === req.params.asin
+    );
+    res.send(filteredComments);
 
-    if (bookFound) {
-      if (bookFound.hasOwnProperty("comments")) {
-        res.status(200).send(bookFound.comments);
-      } else {
-        res.status(404).send("This book has no comments.");
-      }
-    } else {
-      const error = new Error();
-      error.httpStatusCode = 404;
-      next(error);
-    }
+    /**
+     * READ COMMENTS FROM COMMENTS.JSON
+     * FILTER BY ELEMENT ID (REQ.PARAMS.ASIN)
+     *
+     */
   } catch (error) {
     console.log(error);
     next(error);
@@ -176,24 +171,11 @@ booksRouter.get("/:asin/comments", async (req, res, next) => {
 
 booksRouter.delete("/:asin/comments/:commentID", async (req, res, next) => {
   try {
-    const books = await getBooks();
-
-    const bookIndex = books.findIndex((book) => book.asin === req.params.asin);
-
-    if (bookIndex !== -1) {
-      let updatedComments = books[bookIndex].comments.filter(
-        (comment) => comment.CommentID !== req.params.commentID
-      );
-
-      books[bookIndex].comments = updatedComments;
-
-      await writeBooks(books);
-      res.send(books);
-    } else {
-      const error = new Error();
-      error.httpStatusCode = 404;
-      next(error);
-    }
+    const comments = await readJSON(commentsFilePath);
+    const filteredComments = comments.filter(
+      (comment) => comment.elementId !== req.params.asin
+    );
+    res.send(filteredComments);
   } catch (error) {
     console.log(error);
     next(error);
