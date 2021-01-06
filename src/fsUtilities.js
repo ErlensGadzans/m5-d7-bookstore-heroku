@@ -12,7 +12,7 @@ const readDB = async (filePath) => {
   }
 };
 
-const booksRouter = async (filePath, fileContent) => {
+const booksRouter = async (filePath,  ) => {
   try {
     await writeJSON(filePath, fileContent);
   } catch (error) {

@@ -21,7 +21,11 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.get("/books/:commentID/comments", async (req, res, next) => {});
+router.get("/:asin", async (req, res, next) => {
+  //read comments/json
+  //filter where elemtId===asin
+  //send as res
+});
 
 router.delete("/books/comments/:commentID", async (req, res, next) => {});
 
